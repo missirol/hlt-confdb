@@ -37,6 +37,7 @@ public class JavaCodeExecution {
 	public void execute() {
 		System.out.println(" ");
 		System.out.println("[JavaCodeExecution] start:");
+		customiseForCMSHLT2504();
 		// customiseForCMSHLT2471();
 		// customiseForCMSHLT2312();
 		// customiseForCMSHLT2417();
@@ -147,6 +148,55 @@ public class JavaCodeExecution {
 			}
 		}
 	}
+
+        private void customiseForCMSHLT2504(){
+
+          Integer numChangesMod = 0;
+          for (int i = 0; i < config.moduleCount(); i++) {
+            ModuleInstance module = config.module(i);
+            String oldName = module.name();
+            String newName = oldName.replace("Run3TRK", "");
+            if (!newName.equals(oldName)) {
+              if (!config.isUniqueQualifier(newName)) {
+                System.out.println("[customiseForCMSHLT2504] ERROR - module \""+oldName+"\" not renamed, new name is not a unique qualifier: "+newName);
+                continue;
+              }
+
+              try {
+                module.setNameAndPropagate(newName);
+                module.setHasChanged();
+                System.out.println("[customiseForCMSHLT2504] ("+numChangesMod.toString()+") module renamed: "+oldName+" -> "+newName);
+                ++numChangesMod;
+              } catch (DataException e) {
+                System.err.println(e.getMessage());
+              }
+            }
+          }
+
+          Integer numChangesSeq = 0;
+          for (int i = 0; i < config.sequenceCount(); i++) {
+            Sequence sequence = config.sequence(i);
+            String oldName = sequence.name();
+            String newName = oldName.replace("Run3TRK", "");
+            if (!newName.equals(oldName)) {
+              if (!config.isUniqueQualifier(newName)) {
+                System.out.println("[customiseForCMSHLT2504] ERROR - sequence \""+oldName+"\" not renamed, new name is not a unique qualifier: "+newName);
+                continue;
+              }
+
+              try {
+                sequence.setName(newName);
+                sequence.setHasChanged();
+                System.out.println("[customiseForCMSHLT2504] ("+numChangesSeq.toString()+") sequence renamed: "+oldName+" -> "+newName);
+                ++numChangesSeq;
+              } catch (DataException e) {
+                System.err.println(e.getMessage());
+              }
+            }
+          }
+
+          System.out.println("\n[customiseForCMSHLT2504] Number of renamed {Modules, Sequences}: {"+numChangesMod.toString()+", "+numChangesSeq.toString()+"}");
+        }
 
         private void customiseForCMSHLT2471(){
 

@@ -34,6 +34,9 @@ public class ConfDBCreateConfig {
 		String dbName = "cms_cond.cern.ch";
 		String dbUser = "cms_hltdev_writer";
 		String dbPwrd = "";
+		boolean dbProxy = false;
+		String dbProxyHost = "localhost";
+		String dbProxyPort = "8080";
 
 		for (int iarg = 0; iarg < args.length; iarg++) {
 			String arg = args[iarg];
@@ -55,6 +58,12 @@ public class ConfDBCreateConfig {
 				dbUser = args[++iarg];
 			else if (arg.equals("-s") || arg.equals("--dbPwrd"))
 				dbPwrd = args[++iarg];
+			else if (arg.equals("--dbproxy"))
+				dbProxy = true;
+			else if (arg.equals("--dbproxyhost"))
+				dbProxyHost = args[++iarg];
+			else if (arg.equals("--dbproxyport"))
+				dbProxyPort = args[++iarg];
 			else {
 				System.err.println("ERROR: invalid option '" + arg + "'!");
 				System.exit(0);
@@ -79,6 +88,12 @@ public class ConfDBCreateConfig {
 			System.err.println("ERROR: Unknwown db type '" + dbType + "'");
 			System.exit(0);
 		}
+
+		if (dbProxy) {
+		    System.setProperty("socksProxyHost", dbProxyHost);
+		    System.setProperty("socksProxyPort", dbProxyPort);
+		}
+
 		try {
 			HashSet<String> pathsToInclude = new HashSet<String>();
 			if (pathList.endsWith(".txt"))
@@ -90,9 +105,9 @@ public class ConfDBCreateConfig {
 			}
 
 			doIt(dbType, dbUrl, dbUser, dbPwrd, masterConfigName, newConfigName, pathsToInclude, System.out,
-					System.getProperty("user.name"));
+			     System.getProperty("user.name"));
 		} catch (DatabaseException e) {
-			System.err.println("Failed to connet to DB: " + e.getMessage());
+			System.err.println("Failed to connect to DB: " + e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

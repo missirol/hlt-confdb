@@ -36,6 +36,7 @@ public class JavaCodeExecution {
 
 	public void execute() {
 		System.out.println("\n[JavaCodeExecution] start:");
+		// customiseForCMSHLT3351();
 		// customiseForCMSHLT3326();
 		// customiseForCMSHLT3132();
 		// printModuleLabels();
@@ -158,6 +159,11 @@ public class JavaCodeExecution {
 			}
 		}
 	}
+
+        // CMSHLT-3351: Addition of SpecialZeroBias[16-31] streams
+        private void customiseForCMSHLT3351() {
+          addSplitStreams("[customiseForCMSHLT3351]", "hltEventContentAForPP", "PhysicsSpecialZeroBias", 16, 31);
+        }
 
         // CMSHLT-3326: Addition of TestHLTPhysics* streams for DAQ transfer-system tests
         private void customiseForCMSHLT3326() {
